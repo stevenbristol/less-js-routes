@@ -119,7 +119,7 @@ function #{name}_ajax(#{build_params route.segments, 'params'}, options){ return
 function #{name}_ajaxx(#{build_params route.segments, 'params'}, options){ return less_ajaxx('#{build_path route.segments}', verb, params, options);}
 JS
         end
-        File.open(RAILS_ROOT + '/public/javascripts/less_routes.js', 'w') do |f|
+        File.open("#{Rails.public_path}/javascripts/less_routes.js", 'w') do |f|
           f.write s
         end
       end
