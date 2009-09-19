@@ -1,5 +1,14 @@
 require 'less'
 
+# Backwards compatibility for a deprecated function fix. Remove when we don't care about 1.8 breakage.
+unless RUBY_VERSION =~ /^1.9/
+  class Hash
+    def key(k)
+      self.index(k)
+    end
+  end
+end
+
 module Less
   class JsRoutes
     class << self
@@ -107,7 +116,7 @@ JS
       def generate!
         s = get_js_helpers
         ActionController::Routing::Routes.routes.each do |route|
-          name = ActionController::Routing::Routes.named_routes.routes.index(route).to_s
+          name = ActionController::Routing::Routes.named_routes.routes.key(route).to_s
           next if name.blank?
 # s << build_path( route.segments)
 # s << "\n"
