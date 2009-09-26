@@ -29,6 +29,17 @@ module Less
         s.join(', ')
       end
 
+      def build_default_params segs
+        s = []
+        segs.each do |seg|
+          if seg.is_a?(ActionController::Routing::DynamicSegment)
+            segg = seg.key.to_s.gsub(':', '')
+            s << "if ( #{segg} === undefined) { #{segg} = '' }; "
+          end
+        end
+        s
+      end
+
       def build_path segs
         s = ""
         segs.each_index do |i|
@@ -123,9 +134,9 @@ JS
 # s << route.inspect# if route.instance_variable_get(:@conditions)[:method] == :put
           s << "/////\n//#{route}\n" if @@debug
           s << <<-JS
-function #{name}_path(#{build_params route.segments}){ return '#{build_path route.segments}';}
-function #{name}_ajax(#{build_params route.segments, 'params'}, options){ return less_ajax('#{build_path route.segments}', verb, params, options);}
-function #{name}_ajaxx(#{build_params route.segments, 'params'}, options){ return less_ajaxx('#{build_path route.segments}', verb, params, options);}
+function #{name}_path(#{build_params route.segments}){ #{build_default_params route.segments} return '#{build_path route.segments}';}
+function #{name}_ajax(#{build_params route.segments, 'params'}, options){ #{build_default_params route.segments} return less_ajax('#{build_path route.segments}', verb, params, options);}
+function #{name}_ajaxx(#{build_params route.segments, 'params'}, options){ #{build_default_params route.segments} return less_ajaxx('#{build_path route.segments}', verb, params, options);}
 JS
         end
         File.open("#{Rails.public_path}/javascripts/less_routes.js", 'w') do |f|
