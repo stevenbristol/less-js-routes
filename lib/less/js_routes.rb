@@ -33,8 +33,13 @@ module Less
         s = []
         segs.each do |seg|
           if seg.is_a?(ActionController::Routing::DynamicSegment)
-            segg = seg.key.to_s.gsub(':', '')
-            s << "if ( #{segg} === undefined) { #{segg} = '' }; "
+            if seg.is_a?(ActionController::Routing::OptionalFormatSegment)
+              segg = seg.key.to_s.gsub(':','')
+              s << "#{segg} = less_check_format(#{segg});"
+            else
+              segg = seg.key.to_s.gsub(':', '')
+              s << "#{segg} = less_check_parameter(#{segg});"
+            end
           end
         end
         s
@@ -117,6 +122,20 @@ function less_ajaxx(url, verb, params, options){
   } else {  
     new Ajax.Request(url, less_merge_objects({method: verb, parameters: less_get_params(params), onComplete: function(r){eval(r.responseText);}}, options));
   }
+}
+function less_check_parameter(param) {
+  if (param === undefined) {
+    param = '';
+  }
+  return param;
+}
+function less_check_format(param) {
+  if (param === undefined) {
+    param = '';
+  } else {
+    param = '.'+ param;
+  }
+  return param
 }
 JS
       end
