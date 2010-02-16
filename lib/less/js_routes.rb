@@ -17,11 +17,11 @@ module Less
       @@debug = false
 
 
-      def build_params segs, others = ''
+      def build_params route, others = ''
         s = []
-        segs.each do |seg|
-          if seg.is_a?(ActionController::Routing::DynamicSegment)
-            s << seg.key.to_s.gsub(':', '')
+        route.conditions[:path_info].captures.each do |cap|
+          if cap.is_a?(Rack::Mount::GeneratableRegexp::DynamicSegment)
+            s << cap.name.to_s.gsub(':', '')
           end
         end
         s << 'verb'
@@ -29,31 +29,25 @@ module Less
         s.join(', ')
       end
 
-      def build_default_params segs
+      def build_default_params route
         s = []
-        segs.each do |seg|
-          if seg.is_a?(ActionController::Routing::DynamicSegment)
-            if seg.is_a?(ActionController::Routing::OptionalFormatSegment)
-              segg = seg.key.to_s.gsub(':','')
-              s << "#{segg} = less_check_format(#{segg});"
-            else
-              segg = seg.key.to_s.gsub(':', '')
-              s << "#{segg} = less_check_parameter(#{segg});"
-            end
+        route.conditions[:path_info].captures.each do |cap|
+          if cap.is_a?(Rack::Mount::GeneratableRegexp::DynamicSegment)
+            segg = cap.name.to_s.gsub(':', '')
+            s << "#{segg} = less_check_parameter(#{segg});"
           end
         end
         s
       end
 
-      def build_path segs
-        s = ""
-        segs.each_index do |i|
-          seg = segs[i]
-          break if i == segs.size-1 && seg.is_a?(ActionController::Routing::DividerSegment)
-          if seg.is_a?(ActionController::Routing::DividerSegment) || seg.is_a?(ActionController::Routing::StaticSegment)
-            s << seg.instance_variable_get(:@value) 
-          elsif seg.is_a?(ActionController::Routing::DynamicSegment)
-            s << "' + #{seg.key.to_s.gsub(':', '')} + '"
+      def build_path route
+        s = route.path.dup
+        
+        route.conditions[:path_info].captures.each do |cap|
+          if route.conditions[:path_info].required_params.include?(cap.name)
+            s.gsub!(/:#{cap.name.to_s}/){ "' + #{cap.name.to_s.gsub(':','')} + '" }
+          else
+            s.gsub!(/\((\.)?:#{cap.name.to_s}\)/){ "#{$1}' + #{cap.name.to_s.gsub(':','')} + '" }
           end
         end
         s
@@ -129,14 +123,6 @@ function less_check_parameter(param) {
   }
   return param;
 }
-function less_check_format(param) {
-  if (param === undefined) {
-    param = '';
-  } else {
-    param = '.'+ param;
-  }
-  return param
-}
 JS
       end
 
@@ -145,21 +131,24 @@ JS
 
       def generate!
         s = get_js_helpers
+        
         ActionController::Routing::Routes.routes.each do |route|
-          name = ActionController::Routing::Routes.named_routes.routes.key(route).to_s
-          next if name.blank?
-# s << build_path( route.segments)
-# s << "\n"
-# s << route.inspect# if route.instance_variable_get(:@conditions)[:method] == :put
-          s << "/////\n//#{route}\n" if @@debug
-          s << <<-JS
-function #{name}_path(#{build_params route.segments}){ #{build_default_params route.segments} return '#{build_path route.segments}';}
-function #{name}_ajax(#{build_params route.segments, 'params'}, options){ #{build_default_params route.segments} return less_ajax('#{build_path route.segments}', verb, params, options);}
-function #{name}_ajaxx(#{build_params route.segments, 'params'}, options){ #{build_default_params route.segments} return less_ajaxx('#{build_path route.segments}', verb, params, options);}
-JS
-        end
-        File.open("#{Rails.public_path}/javascripts/less_routes.js", 'w') do |f|
-          f.write s
+          if name = route.name
+  # s << build_path( route.segments)
+  # s << "\n"
+  # s << route.inspect# if route.instance_variable_get(:@conditions)[:method] == :put
+            
+            s << "/////\n//#{route}\n" if @@debug
+            
+            s << <<-JS
+  function #{name}_path(#{build_params route}){ #{build_default_params route} return '#{build_path route}';}
+  function #{name}_ajax(#{build_params route, 'params'}, options){ #{build_default_params route} return less_ajax('#{build_path route}', verb, params, options);}
+  function #{name}_ajaxx(#{build_params route, 'params'}, options){ #{build_default_params route} return less_ajaxx('#{build_path route}', verb, params, options);}
+  JS
+          end
+          File.open("#{Rails.public_path}/javascripts/less_routes.js", 'w') do |f|
+            f.write s
+          end
         end
       end
 
