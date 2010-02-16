@@ -125,6 +125,10 @@ module Less
     }
     return param;
   },
+  
+  less_check_path: function(path) {
+    return path.replace(/\\.$/m, '');
+  },
 JS
       end
 
@@ -145,9 +149,9 @@ JS
           s << <<-JS
   
   // #{route.name} => #{route.path}
-  #{name.to_s}_path: function(#{build_params route}){ #{build_default_params route} return '#{build_path route}';},
-  #{name.to_s}_ajax: function(#{build_params route, 'params'}, options){ #{build_default_params route} return LessJsRoutes.less_ajax('#{build_path route}', verb, params, options);},
-  #{name.to_s}_ajaxx: function(#{build_params route, 'params'}, options){ #{build_default_params route} return LessJsRoutes.less_ajaxx('#{build_path route}', verb, params, options);},
+  #{name.to_s}_path: function(#{build_params route}){ #{build_default_params route} return LessJsRoutes.less_check_path('#{build_path route}');},
+  #{name.to_s}_ajax: function(#{build_params route, 'params'}, options){ #{build_default_params route} return LessJsRoutes.less_ajax(LessJsRoutes.less_check_path('#{build_path route}'), verb, params, options);},
+  #{name.to_s}_ajaxx: function(#{build_params route, 'params'}, options){ #{build_default_params route} return LessJsRoutes.less_ajaxx(LessJsRoutes.less_check_path('#{build_path route}'), verb, params, options);},
   JS
         end
         s << "\n}"
