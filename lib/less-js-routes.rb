@@ -1,4 +1,4 @@
-require 'less'
+require "less-js-routes/version"
 
 # Backwards compatibility for a deprecated function fix. Remove when we don't care about 1.8 breakage.
 unless RUBY_VERSION =~ /^1.9/
@@ -9,8 +9,11 @@ unless RUBY_VERSION =~ /^1.9/
   end
 end
 
+
 module Less
-  class JsRoutes
+  module Js
+    class Routes
+      
     class << self
       
       
@@ -141,13 +144,39 @@ JS
       end
 
 
+      def get_routes
+        Rails.application.reload_routes!
+        all_routes = Rails.application.routes.routes
+        routes = all_routes.collect do |route|
+
+          reqs = route.requirements.dup
+          reqs[:to] = route.app unless route.app.class.name.to_s =~ /^ActionDispatch::Routing/
+          reqs = reqs.empty? ? "" : reqs.inspect
+
+          {:name => route.name.to_s, :verb => route.verb.to_s, :path => route.path, :reqs => reqs}
+        end
+
+        reject_routes routes
+
+        if @@debug
+          routes.each do |r|
+            puts "#{r[:name]} #{r[:verb]} #{r[:path]} #{r[:reqs]}"
+          end
+        end
+        routes
+      end
+      
+      def reject_routes routes
+        routes.reject! { |r| r[:path] =~ %r{/rails/info/properties} } # Skip the route if it's internal info route
+        routes
+      end
 
 
       def generate!
         s = get_js_helpers
-        ActionController::Routing::Routes.routes.each do |route|
-          name = ActionController::Routing::Routes.named_routes.routes.key(route).to_s
-          next if name.blank?
+        routes = get_routes
+        routes.each do |route|
+         
 # s << build_path( route.segments)
 # s << "\n"
 # s << route.inspect# if route.instance_variable_get(:@conditions)[:method] == :put
@@ -161,8 +190,9 @@ JS
         File.open("#{Rails.public_path}/javascripts/less_routes.js", 'w') do |f|
           f.write s
         end
+        
       end
-
     end
   end
+end
 end
