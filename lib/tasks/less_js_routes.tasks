@@ -1,10 +1,9 @@
-
 namespace :less do
   namespace :js do
     desc "Make a js file that will have functions that will return restful routes/urls."
     task :routes => :environment do
-      require File.join(File.dirname(__FILE__), "../lib/less/js_routes.rb")
-      Less::JsRoutes.generate!
+      require File.join(File.dirname(__FILE__), "../less-js-routes.rb")
+      Less::Js::Routes.generate!
     end
   end
 end
