@@ -1,9 +1,9 @@
 require 'active_support/configurable'
 
-module Less::JS::Routes
+module Less::Js::Routes::Config
   
   def self.configure(&block)
-    yield @config ||= Less::Js::Routes::Configuration.new
+    yield @config ||= Less::Js::Routes::Config::Configuration.new
   end
 
   def self.config
@@ -16,11 +16,13 @@ module Less::JS::Routes
     config_accessor :debug
     config_accessor :ignore
     config_accessor :only
+    config_accessor :output_path
   end
 
   configure do |config|
     config.debug = false
     config.ignore = []
     config.only = []
+    config.output_path = "#{Rails.public_path}/javascripts/less_routes.js"
   end
 end
