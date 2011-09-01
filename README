@@ -19,7 +19,7 @@ NOTE: for Rails versions < 2.3 use version d9cacd51454814cf4268da007c439573418ad
 gem install less-js-routes
 or
 Bundler:
-gem 'less-js-routes', :git => 'https://github.com/stevenbristol/less-js-routes'
+gem 'less-js-routes', :git => 'http://github.com/stevenbristol/less-js-routes'
 
 
 

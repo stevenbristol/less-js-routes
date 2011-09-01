@@ -1,4 +1,4 @@
-require 'Rails'
+#require 'Rails'
 
 module Less::Js:Routes
   class Railtie < ::Rails::Railtie
