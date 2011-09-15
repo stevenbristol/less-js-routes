@@ -54,17 +54,17 @@ Less::Js::Routes::Config.configure do |config|
 end
 ```
 
-# Debug
+### Debug
 Adds debugging info to the javascript file.
 
-# Ignore
+### Ignore
 * Takes and array of regex or symbols. 
 * Will not generate a route if symbol or regex matches.
 * If symbol is passed the symbol must match the name of the controller without "_controller," so for the users_controller you would just pass :user.
 * if regex is passed regex is matched against any part of name (without "_controller"), so /admin/ will match on "admin," "admins," or "administrator." /min/ will match on "min," "admin," etc.
 * If both ignore and only are used, generation uses a most restrictive approach.
 
-# Only
+### Only
 
 * Takes and array of regex or symbols. 
 * Will only generate a route if symbol or regex matches.
@@ -183,7 +183,7 @@ function(r){eval(r.responseText)};
 ```
 This means rjs or any javascript that your app returns will be eval'd.
 
-* Returns: string that is the path to the resource. 
+* Returns: Nothing. Everything happens async so there's nothing to return.
 
 Example:
 
@@ -194,7 +194,6 @@ post_comments_ajax(1, 'json', null, null, {success: function(r){console.log(r)}}
 //function posts_ajax(format, verb, params, options)
 post_ajax('js', 'post', {post_title: "title", post_body: "body"})
 ```
-
 
 
 
