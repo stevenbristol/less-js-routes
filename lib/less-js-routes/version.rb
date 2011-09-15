@@ -1,7 +1,7 @@
 module Less
   module Js
     module Routes
-      VERSION = "0.8.50"
+      VERSION = "0.9"
     end
   end
 end
