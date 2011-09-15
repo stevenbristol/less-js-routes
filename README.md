@@ -182,6 +182,7 @@ If neither "success" ("onSuccess") or "complete" ("onComplete") options are supp
 function(r){eval(r.responseText)};
 ```
 This means rjs or any javascript that your app returns will be eval'd.
+
 * Returns: string that is the path to the resource. 
 
 Example:
