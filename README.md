@@ -113,6 +113,7 @@ function comment_path(id, format){ var _id = less_check_parameter(id);var _forma
 function comment_ajax(id, format, verb, params, options){ var _id = less_check_parameter(id);var _format = less_check_format(format);return less_ajax('/comments' + '/' + _id + _format, verb, params, options)}
 ```
 
+### Note
 
 * Nested routes are generated.
 * new and edit routes are generated.
@@ -121,8 +122,9 @@ function comment_ajax(id, format, verb, params, options){ var _id = less_check_p
 
 
 
+### Functions
 
-```*_path``` Functions:
+#### ```*_path``` Functions:
 
 * Params: id(s), format
 	* id(s): The integer ids for the resource you're accessing. Default is ''.
@@ -160,7 +162,7 @@ post_comment_path(1, 2, 'xml')
 
 
 
-```*_ajax``` Functions:
+#### ```*_ajax``` Functions:
 
 * Params: id(s), format, verb, params, options
 	* id(s): The integer ids for the resource you're accessing. Default is ''.
@@ -174,13 +176,13 @@ post_comment_path(1, 2, 'xml')
 function(r, status, error_thrown){alert(status + ": " + error_thrown)}
 ```
 
-		* If neither "success" ("onSuccess") or "complete" ("onComplete") options are supplied the following will be executed when the request completes with no error:
+If neither "success" ("onSuccess") or "complete" ("onComplete") options are supplied the following will be executed when the request completes with no error:
 
 ``` js
 function(r){eval(r.responseText)};
 ```
-		* This means rjs or any javascript that your app returns will be eval'd.
-*Returns: string that is the path to the resource. 
+This means rjs or any javascript that your app returns will be eval'd.
+* Returns: string that is the path to the resource. 
 
 Example:
 
