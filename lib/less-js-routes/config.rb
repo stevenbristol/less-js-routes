@@ -17,10 +17,12 @@ module Less::Js::Routes::Config
     config_accessor :ignore
     config_accessor :only
     config_accessor :output_path
+    config_accessor :internal_debug
   end
 
   configure do |config|
     config.debug = false
+    config.internal_debug = false
     config.ignore = []
     config.only = []
     config.output_path = "#{Rails.public_path}/javascripts/less_routes.js"

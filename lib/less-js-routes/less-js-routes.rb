@@ -29,15 +29,14 @@ class << self
     routes.each do |route|
       
       
-      #function edit_invoice_payment_ajaxx(invoice_id, id, format, verb, params, options){ invoice_id = less_check_parameter(invoice_id);id = less_check_parameter(id);format = less_check_format(format); return less_ajaxx('/invoices/' + invoice_id + '/payments/' + id + '/edit' + format + '', verb, params, options);}
-      #function invoice_payment_path(invoice_id, id, format, verb){ invoice_id = less_check_parameter(invoice_id);id = less_check_parameter(id);format = less_check_format(format); return '/invoices/' + invoice_id + '/payments/' + id + '' + format + '';}
       
-      p "***"
-      p route
-      p build_funciton_call route, 'path'
-      p build_funciton_call route, 'ajax'
+      if config.internal_debug
+        p "***"
+        p route
+        p build_funciton_call route, 'path'
+        p build_funciton_call route, 'ajax'
+      end
       
-      #s << "/////\n//#{route.inspect}\n" if config.debug
       s += build_funciton_call route, 'path'
       s += "\n"
       s += build_funciton_call route, 'ajax'
@@ -143,23 +142,6 @@ for (prop in b){z[prop] = b[prop]}
 return z;
 }
 
-//function less_jax(url, verb, params, options){
-//#{'console.log("less_ajax(" + url + ", " + verb + ", " + params +", " + options + ")");' if config.debug} 
-//if (verb == undefined) {verb = 'get';}
-//var res;
-//if (jq_defined()){
-//v = verb.toLowerCase() == 'get' ? 'GET' : 'POST'
-//if (verb.toLowerCase() == 'get' || verb.toLowerCase() == 'post'){p = less_get_params(params);}
-//else{p = less_get_params(less_merge_objects({'_method': verb.toLowerCase()}, params))} 
-//#{'console.log("less_merge_objects:v : " + v);' if config.debug} 
-//#{'console.log("less_merge_objects:p : " + p);' if config.debug} 
-//res = jQuery.ajax(less_merge_objects({async:false, url: url, type: v, data: p}, options)).responseText;
-//} else {  
-//new Ajax.Request(url, less_merge_objects({asynchronous: false, method: verb, parameters: less_get_params(params), onComplete: function(r){res = r.responseText;}}, options));
-//}
-//if (url.indexOf('.json') == url.length-5){ return less_json_eval(res);}
-//else {return res;}
-//}
 function less_ajax(url, verb, params, options){
 #{'console.log("less_ajax(" + url + ", " + verb + ", " + params +", " + options + ")");' if config.debug} 
 if (verb == undefined) {verb = 'get';}
@@ -207,7 +189,6 @@ JS
 
       reqs = route.requirements.dup
       reqs[:to] = route.app unless route.app.class.name.to_s =~ /^ActionDispatch::Routing/
-      #reqs = reqs.empty? ? "" : reqs.inspect
 
       {
         :name => route.name.to_s, 
@@ -230,7 +211,7 @@ JS
   def reject_routes routes
     routes.reject! { |r| r[:path] =~ %r{/rails/info/properties} } # Skip the route if it's internal info route
     routes.reject! { |r| r[:name].blank?}
-    config.ignore.each do |rule|
+    [config.ignore].flatten.each do |rule|
       if rule.is_a? Regexp
         routes.reject! {|r| 
           r[:reqs][:controller] =~ rule}
@@ -239,7 +220,7 @@ JS
       end
     end
     routes.reject! do |r|
-      !config.only.any? do |rule|
+      ![config.only].flatten.any? do |rule|
         if rule.is_a? Regexp
           r[:reqs][:controller] =~ rule
         else
@@ -255,6 +236,7 @@ JS
     s = []
     s << "Debug Loging Less Js Routes with these config options:"
     config.config.each do |k, v|
+      next if k.to_s == "internal_debug"
       s << "#{k}: #{v.inspect}"
     end
     log s.join("\n")
