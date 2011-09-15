@@ -28,10 +28,13 @@ gem 'less-js-routes', :git => "http://github.com/stevenbristol/less-js-routes"
 ```
 
 Generate the less_routes.js file
+
 ``` rb
 rake less:js:routes
 ```
+
 or 
+
 ``` rb
 Less::Js::Routes.generate!
 ```
@@ -118,11 +121,12 @@ function comment_ajax(id, format, verb, params, options){ var _id = less_check_p
 
 ```*_path``` Functions:
 Params: id(s), format
-	* id(s): The integer ids for the resource you're accessing. Default is ''.
-	* format: The format you would like returned for the resource, example: "js", "json," "xml," etc. Default is ''.
+* id(s): The integer ids for the resource you're accessing. Default is ''.
+* format: The format you would like returned for the resource, example: "js", "json," "xml," etc. Default is ''.
 Returns: string that is the path to the resource. 
 
 Example:
+
 ``` js
 //function comments_path(format)
 comments_path()
@@ -153,24 +157,30 @@ post_comment_path(1, 2, 'xml')
 
 
 ```*_ajax``` Functions:
+
 Params: id(s), format, verb, params, options
-	* id(s): The integer ids for the resource you're accessing. Default is ''.
-	* format: The format you would like returned for the resource, example: "js", "json," "xml," etc. Default is ''.
-	* verb: The HTTP verb you'd like to use, 'get,' 'post,' 'put,' or 'delete.'  Default is 'get'.
-	* params: Additional params you'd like to pass to the ajax request. Example: {name: 'steve'}
-	* options: Additional ajax options you'd like to pass to the javascript library ajax function. 
-		If no "error" ("onFailure") option is supplied the following will be executed if an error occurs:
-		``` js
-		function(r, status, error_thrown){alert(status + ": " + error_thrown)}
-		```
-		If neither "success" ("onSuccess") or "complete" ("onComplete") options are supplied the following will be executed when the request completes with no error:
-		``` js
-		function(r){eval(r.responseText)};
-		```
-		This means rjs or any javascript that your app returns will be eval'd.
+* id(s): The integer ids for the resource you're accessing. Default is ''.
+* format: The format you would like returned for the resource, example: "js", "json," "xml," etc. Default is ''.
+* verb: The HTTP verb you'd like to use, 'get,' 'post,' 'put,' or 'delete.'  Default is 'get'.
+* params: Additional params you'd like to pass to the ajax request. Example: {name: 'steve'}
+* options: Additional ajax options you'd like to pass to the javascript library ajax function. 
+	If no "error" ("onFailure") option is supplied the following will be executed if an error occurs:
+	
+	``` js
+	function(r, status, error_thrown){alert(status + ": " + error_thrown)}
+	```
+	
+	If neither "success" ("onSuccess") or "complete" ("onComplete") options are supplied the following will be executed when the request completes with no error:
+	
+	``` js
+	function(r){eval(r.responseText)};
+	```
+	
+	This means rjs or any javascript that your app returns will be eval'd.
 Returns: string that is the path to the resource. 
 
 Example:
+
 ``` js
 //function post_comments_ajax(post_id, format, verb, params, options)
 post_comments_ajax(1, 'js')
