@@ -119,11 +119,15 @@ function comment_ajax(id, format, verb, params, options){ var _id = less_check_p
 * Singular and plural routes are generated.
 * For each route two functions are generated: 
 
+
+
+
 ```*_path``` Functions:
-Params: id(s), format
-* id(s): The integer ids for the resource you're accessing. Default is ''.
-* format: The format you would like returned for the resource, example: "js", "json," "xml," etc. Default is ''.
-Returns: string that is the path to the resource. 
+
+*Params: id(s), format
+** id(s): The integer ids for the resource you're accessing. Default is ''.
+** format: The format you would like returned for the resource, example: "js", "json," "xml," etc. Default is ''.
+*Returns: string that is the path to the resource. 
 
 Example:
 
