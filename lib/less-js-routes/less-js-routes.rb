@@ -171,7 +171,7 @@ param = '';
 return param;
 }
 function less_check_format(param) {
-if (param === undefined) {
+if (param === undefined || param == '') {
 param = '';
 } else {
 param = '.'+ param;
