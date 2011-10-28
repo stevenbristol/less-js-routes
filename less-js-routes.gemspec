@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
                         "lib/less-js-routes/less-js-routes.rb", 
                         "lib/less-js-routes/version.rb", 
                         "lib/less-js-routes.rb", 
-                        "lib/railtie.rb",
+                        "lib/less-js-routes/railtie.rb",
                         "lib/tasks/less_js_routes.tasks"
                       ] 
   #gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

@@ -11,7 +11,7 @@ and functions that will call these routes using ajax (uses jQuery or Prototype).
 
 * Gives you a javascript function that will return the path for any route.
 * Gives you a javascript function that will call any route with the proper method (PUT/POST/etc).
-* Control which routes get generated with :only, :ignore flags.
+* Let's you control which routes get generated with :only, :ignore flags.
 * Handles nested routes.
 
 
@@ -21,7 +21,7 @@ and functions that will call these routes using ajax (uses jQuery or Prototype).
 NOTE for Rails 2 use branch "rails-2"
 NOTE: for Rails versions < 2.3 use version d9cacd51454814cf4268da007c439573418adbcd.
 
-Add to your `Gemfile`:
+Add it to your `Gemfile`:
 
 ``` rb
 gem 'less-js-routes', :git => "http://github.com/stevenbristol/less-js-routes"
@@ -39,7 +39,7 @@ or
 Less::Js::Routes.generate!
 ```
 
-This file should be regenerated anytime the routes change, so it's a good idea to put it into your deploy script or run it any time your app starts.
+This file should be regenerated any time the routes change, so it's a good idea to put it into your deploy script or run it any time your app starts.
 
 
 ## Configuration Options
@@ -58,19 +58,19 @@ end
 Adds debugging info to the javascript file.
 
 ### Ignore
-* Takes and array of regex or symbols. 
+* Takes an array of regex or symbols. 
 * Will not generate a route if symbol or regex matches.
-* If symbol is passed the symbol must match the name of the controller without "_controller," so for the users_controller you would just pass :user.
-* if regex is passed regex is matched against any part of name (without "_controller"), so /admin/ will match on "admin," "admins," or "administrator." /min/ will match on "min," "admin," etc.
-* If both ignore and only are used, generation uses a most restrictive approach.
+* If a symbol is passed the symbol must match the name of the controller without "_controller," so for the users_controller you would just pass :user.
+* If a regex is passed the regex is matched against any part of name (without "_controller"), so /admin/ will match on "admin," "admins," or "administrator." /min/ will match on "min," "admin," etc.
+* If both ignore and only are used, ignore will trump only, taking a "most restrictive approach."
 
 ### Only
 
-* Takes and array of regex or symbols. 
+* Takes an array of regex or symbols. 
 * Will only generate a route if symbol or regex matches.
-* If symbol is passed the symbol must match the name of the controller without "_controller," so for the users_controller you would just pass :user.
-* if regex is passed regex is matched against any part of name (without "_controller"), so /admin/ will match on "admin," "admins," or "administrator." /min/ will match on "min," "admin," etc.
-* If both ignore and only are used, generation uses a most restrictive approach.
+* If a symbol is passed the symbol must match the name of the controller without "_controller," so for the users_controller you would just pass :user.
+* If a regex is passed the regex is matched against any part of name (without "_controller"), so /admin/ will match on "admin," "admins," or "administrator." /min/ will match on "min," "admin," etc.
+* If both ignore and only are used, ignore will trump only, taking a "most restrictive approach."
 
 
 ## Usage
@@ -181,7 +181,7 @@ If neither "success" ("onSuccess") or "complete" ("onComplete") options are supp
 ``` js
 function(r){eval(r.responseText)};
 ```
-This means rjs or any javascript that your app returns will be eval'd.
+This means that by default rjs or any javascript that your app returns will be eval'd.
 
 * Returns: Nothing. Everything happens async so there's nothing to return.
 
