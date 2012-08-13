@@ -42,7 +42,7 @@ class << self
       s += build_funciton_call route, 'ajax'
       s += "\n"
     end
-    File.open("#{Rails.public_path}/javascripts/less_routes.js", 'w') do |f|
+    File.open(config.output_path, 'w') do |f|
       f.write s
     end
 
@@ -234,7 +234,7 @@ JS
   
   def log_config
     s = []
-    s << "Debug Loging Less Js Routes with these config options:"
+    s << "Debug Logging Less Js Routes with these config options:"
     config.config.each do |k, v|
       next if k.to_s == "internal_debug"
       s << "#{k}: #{v.inspect}"
