@@ -193,7 +193,7 @@ JS
       {
         :name => route.name.to_s, 
         :verb => route.verb.to_s, 
-        :path => route.path.gsub("(.:format)", ''), 
+        :path => route.path.spec.to_s.gsub("(.:format)", ''), 
         :reqs => reqs
       }
     end
