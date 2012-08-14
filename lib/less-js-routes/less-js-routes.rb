@@ -71,31 +71,72 @@ class << self
   end
   
   def build_params route, type
+    send "build_#{type}_params", route
+  end
+  
+  def build_ajax_params route
     s = []
     s << param_segments( route[:path])
     s << "format"
-    if type == 'ajax'
-      s << "verb"
-      s << "params"
-      s << "options"
-    end
+    s << "verb"
+    s << "params"
+    s << "options"
+    "(#{s.reject{|x| x.blank?}.join(", ")})"
+  end
+  
+  def build_path_params route
+    s = []
+    s << param_segments( route[:path])
+    s << "format"
+    s << "params"
     "(#{s.reject{|x| x.blank?}.join(", ")})"
   end
 
 
   def build_body route, type
+    send "build_#{type}_body", route
+    # s = ["{ "]
+    # param_segments(route[:path]).each do |segment|
+    #   s << "var _#{segment} = less_check_parameter(#{segment});"
+    # end
+    # s << "var _format = less_check_format(format);"
+    # s << "return "
+    # s << "less_ajax(" if type == 'ajax'
+    # s1 = []
+    # s1 << build_path_with_variables( route[:path])
+    # s1 << %w(verb params options) if type == 'ajax'
+    # s << s1.reject{|str| str.blank?}.join(", ")
+    # s << ")" if type == 'ajax'
+    # s << "}"
+    # s.join
+  end
+
+  def build_path_body route
     s = ["{ "]
     param_segments(route[:path]).each do |segment|
       s << "var _#{segment} = less_check_parameter(#{segment});"
     end
     s << "var _format = less_check_format(format);"
     s << "return "
-    s << "less_ajax(" if type == 'ajax'
+    s << build_path_with_variables( route[:path])
+    s << " +  less_params_to_query(params)"
+    s << "}"
+    s.join
+  end
+
+  def build_ajax_body route
+    s = ["{ "]
+    param_segments(route[:path]).each do |segment|
+      s << "var _#{segment} = less_check_parameter(#{segment});"
+    end
+    s << "var _format = less_check_format(format);"
+    s << "return "
+    s << "less_ajax("
     s1 = []
     s1 << build_path_with_variables( route[:path])
-    s1 << %w(verb params options) if type == 'ajax'
+    s1 << %w(verb params options)
     s << s1.reject{|str| str.blank?}.join(", ")
-    s << ")" if type == 'ajax'
+    s << ")"
     s << "}"
     s.join
   end
@@ -123,14 +164,28 @@ function less_json_eval(json){return eval('(' +  json + ')')}
 function jq_defined(){return typeof(jQuery) != "undefined"}
 
 function less_get_params(obj){
-#{'console.log("less_get_params(" + obj + ")");' if config.debug} 
+ 
 if (jq_defined()) { return obj }
 if (obj == null) {return '';}
-var s = [];
-for (prop in obj){
-s.push(prop + "=" + obj[prop]);
+return less_params_to_string(obj);
 }
-return s.join('&') + '';
+
+function less_params_to_string(obj){
+  var s = [];
+  for (prop in obj){
+  s.push(prop + "=" + obj[prop]);
+  }
+  return s.join('&') + '';
+}
+
+function less_params_to_query(obj){
+  s = less_params_to_string(obj);
+  if (s.length > 0) {
+    return "?" + s
+  }
+  else {
+    return "";
+  }
 }
 
 function less_merge_objects(a, b){
@@ -171,12 +226,11 @@ param = '';
 return param;
 }
 function less_check_format(param) {
-if (param === undefined || param == '') {
-param = '';
+if (param === undefined || param == '' || param == null) {
+return '';
 } else {
-param = '.'+ param;
+return '.'+ param;
 }
-return param
 }
 JS
   end
