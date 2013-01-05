@@ -51,6 +51,7 @@ Less::Js::Routes::Config.configure do |config|
   config.debug = false 													#default is false
   config.ignore = [/devise/, :users, /admin/]		#default is []
   config.only = [:posts, :comments]							#default is []
+  config.output_path = "#{Rails.root}/app/assets/javascripts/less_routes.js"   #default is public/javascripts
 end
 ```
 
