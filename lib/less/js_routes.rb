@@ -42,7 +42,7 @@ module Less
             end
           end
         end
-        s
+        s.join(" ")
       end
 
       def build_path segs
