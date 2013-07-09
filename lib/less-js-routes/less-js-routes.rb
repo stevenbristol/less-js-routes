@@ -1,9 +1,8 @@
-
 require 'less-js-routes/config'
 
 
 # Backwards compatibility for a deprecated function fix. Remove when we don't care about 1.8 breakage.
-unless RUBY_VERSION =~ /^1.9/
+if RUBY_VERSION =~ /^1.8/
   class Hash
     def key(k)
       index(k)
